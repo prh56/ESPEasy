@@ -1,7 +1,7 @@
 /*
-ESPeasySoftwareSerial.h
+SoftwareSerial.h
 
-ESPeasySoftwareSerial.cpp - Implementation of the Arduino software serial for ESP8266.
+SoftwareSerial.cpp - Implementation of the Arduino software serial for ESP8266.
 Copyright (c) 2015-2016 Peter Lerup. All rights reserved.
 
 This library is free software; you can redistribute it and/or
@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
-#ifndef ESPeasySoftwareSerial_h
-#define ESPeasySoftwareSerial_h
+#ifndef SoftwareSerial_h
+#define SoftwareSerial_h
 
 #include <inttypes.h>
 #include <Stream.h>
@@ -32,15 +32,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // Speed up to 115200 can be used.
 
 
-class ESPeasySoftwareSerial : public Stream
+class SoftwareSerial : public Stream
 {
 public:
-   ESPeasySoftwareSerial(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic = false, uint16_t buffSize = 64);
-   virtual ~ESPeasySoftwareSerial();
+   SoftwareSerial(int receivePin, int transmitPin, bool inverse_logic = false, unsigned int buffSize = 64);
+   ~SoftwareSerial();
 
    void begin(long speed);
-   void setTransmitEnablePin(uint8_t transmitEnablePin);
+   long baudRate();
+   void setTransmitEnablePin(int transmitEnablePin);
 
+   bool overflow();
    int peek();
 
    virtual size_t write(uint8_t byte);
@@ -53,29 +55,29 @@ public:
    void enableRx(bool on);
 
    void rxRead();
-   
-   // Peter AVR compatibility methods
+
+   // AVR compatibility methods
    bool listen() { enableRx(true); return true; }
    void end() { stopListening(); }
    bool isListening() { return m_rxEnabled; }
-   bool stopListening() { enableRx(false); return true; } 
+   bool stopListening() { enableRx(false); return true; }
 
    using Print::write;
 
 private:
-   bool isValidGPIOpin(uint8_t pin);
-   uint8_t pinToIndex(uint8_t pin);
+   bool isValidGPIOpin(int pin);
 
    // Member variables
-   uint8_t m_rxPin, m_txPin, m_txEnablePin;
-   bool m_rxValid, m_txValid, m_txEnableValid;
+   int m_rxPin, m_txPin, m_txEnablePin;
+   bool m_rxValid, m_rxEnabled;
+   bool m_txValid, m_txEnableValid;
    bool m_invert;
+   bool m_overflow;
    unsigned long m_bitTime;
-   uint16_t m_inPos, m_outPos;
-   uint16_t m_buffSize;
+   bool m_highSpeed;
+   unsigned int m_inPos, m_outPos;
+   int m_buffSize;
    uint8_t *m_buffer;
-   // Peter
-   bool m_rxEnabled;  
 
 };
 

@@ -69,7 +69,7 @@
 //   MSP5611 I2C temp/baro sensor
 //   BMP280 I2C Barometric Pressure sensor
 //   SHT1X temperature/humidity sensors
-//   Ser2Net server
+//   Ser2Net server xx
 
 #include "ESPEasy-Globals.h"
 
